@@ -26,6 +26,32 @@
 
 @implementation LVSelectPaymentMethodViewController
 
+- (NSDictionary *)getPaymentTypeAndCardNumPwd
+{
+    NSArray *visibleIndexPaths = [self.tableView indexPathsForVisibleRows];
+    NSMutableDictionary *dic = nil;
+    if (visibleIndexPaths.count > 0) {
+        dic = [NSMutableDictionary dictionary];
+        NSIndexPath *indexPath = visibleIndexPaths[0];
+        if (indexPath.section == 2) {
+            LVMultiPaymentTypeTableViewCell *cell = (LVMultiPaymentTypeTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+            dic[@(PaymentMethod)] = [cell getSelectType] == AiXinShangWuKa ? @(Aixinshangwuka) : @(Haofutong);
+            dic[@(CardNum)] = cell.cardNumTextField.text;
+            dic[@(Pwd)] = cell.pwdTextField.text;
+        } else {
+            LVNormalePaymentInputTypeTableViewCell *cell = (LVNormalePaymentInputTypeTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+            if (indexPath.row == 0) {
+                dic[@(PaymentMethod)] = @(Zhifubao);
+            } else {
+                dic[@(PaymentMethod)] = @(Yinlian);
+            }
+            dic[@(CardNum)] = cell.cardNumTextField.text;
+            dic[@(Pwd)] = cell.pwdTextField.text;
+        }
+    }
+    return dic;
+}
+
 #pragma mark - LVPaymentHeaderViewDelegate
 
 - (void)lvPaymentHeaderViewDidSelected:(LVPaymentHeaderView *)lvPaymentHeaderView
